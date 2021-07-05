@@ -34,16 +34,17 @@ if (mouse_check_button_released(mb_left))
 	}
 	var mouseX = floor(mouse_x / 16), mouseY = floor(mouse_y / 16), getTile = minefield[# mouseX, mouseY], goodStart = true;
 	if (revealed[# mouseX, mouseY] == revealTypes.flag) exit
-	if (getTile == mineTypes.mine)
+	if (getTile != mineTypes.empty)
 	{
 		if (start)
 		{
-			while (minefield[# mouseX, mouseY] == mineTypes.mine) minefield_create();
+			while (minefield[# mouseX, mouseY] != mineTypes.empty) minefield_create();
 			minefield_reveal_tile(mouseX, mouseY);
 			goodStart = false;
 			start = false;
+			exit
 		}
-		if (goodStart)
+		if (getTile == mineTypes.mine && goodStart)
 		{
 			audio_play_sound(sndBoom, 0, false);
 			revealed[# mouseX, mouseY] = revealTypes.mine;
@@ -61,7 +62,7 @@ if (mouse_check_button_released(mb_left))
 			exit
 		}
 	}
-	else if (getTile == mineTypes.item)
+	if (getTile == mineTypes.item)
 	{
 		start = false;
 		minefield[# mouseX, mouseY] = mineTypes.empty + minefield_has_mine(mouseX - 1, mouseY - 1) + 
